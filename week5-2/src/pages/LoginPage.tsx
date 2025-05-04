@@ -1,7 +1,21 @@
 import useForm from "../hooks/useForm";
 import { UserSigninInformation, validateSignin } from "../utils/validate";
+import {useAuth} from "../context/AuthContext"; 
+import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
 const LoginPage = () => {
+  const {login, accessToken} = useAuth(); 
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (accessToken) {
+      navigate("/");
+    }
+  })
+
+
+  //const {setItem} = useLocalStorage(LOCAL_STORAGE_KEY.accessToken);
   const {getInputProps, errors, touched, values} = useForm<UserSigninInformation>({
     initialValue: {
       email: "",
@@ -10,9 +24,17 @@ const LoginPage = () => {
     validate: validateSignin,
   })
 
-  const handleSubmit = () => {
-    alert("로그인 시도됨");
-    console.log(values);
+  const handleSubmit = async () => {
+    // console.log(values);
+
+    // try {
+    //   const response = await postSignin(values);
+    //   localStorage.setItem("accessToken", response.data.accessToken); //토큰을 가장 쉽게 보관할 수 있는 방법
+    //   console.log(response);
+    // } catch (error) {
+    //   alert(error?.message);
+    // }
+    await login(values);
   }
 
   // 오류가 하나라도 있거나, 입력값이 비어있으면 버튼 비활성화
